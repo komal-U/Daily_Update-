@@ -1,1 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Daily Work Tracker</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f6f8;
+    color: #222;
+}
+
+.header {
+    background: #1f4e78;
+    color: white;
+    text-align: center;
+    padding: 22px 15px;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 25px;
+}
+
+.header p {
+    margin: 7px 0 0;
+    font-size: 14px;
+}
+
+.container {
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 0 15px;
+}
+
+.card {
+    background: white;
+    border-radius: 12px;
+    padding: 22px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
+
+h2 {
+    color: #1f4e78;
+}
+
+label {
+    display: block;
+    font-weight: bold;
+    margin-top: 15px;
+    margin-bottom: 6px;
+}
+
+input,
+textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 7px;
+    font-size: 15px;
+}
+
+textarea {
+    min-height: 120px;
+}
+
+button {
+    width: 100%;
+    margin-top: 20px;
+    padding: 14px;
+    border: none;
+    border-radius: 7px;
+    background: #1f4e78;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+button:disabled {
+    background: #888;
+}
+
+.success {
+    display: none;
+    margin-top: 15px;
+    padding: 12px;
+    background: #d4edda;
+    color: #155724;
+    border-radius: 7px;
+    text-align: center;
+}
+
+.error {
+    display: none;
+    margin-top: 15px;
+    padding: 12px;
+    background: #f8d7da;
+    color: #721c24;
+    border-radius: 7px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+
+<div class="header">
+
+<h1>Daily Work Tracker</h1>
+
+<p>Employee Field Visit & Daily Work Record</p>
+
+</div>
+
+
+<div class="container">
+
+
+<div class="card">
+
+<h2>➕ Add Daily Entry</h2>
+
+
+<form id="workForm">
+
+
+<label>Date</label>
+
+<input
+type="date"
+id="date"
+required
+>
+
+
+<label>Employee Name</label>
+
+<input
+type="text"
+id="empName"
+placeholder="Enter employee name"
+required
+>
+
+
+<label>Employee ID</label>
+
+<input
+type="text"
+id="empId"
+placeholder="Enter employee ID"
+required
+>
+
+
+<label>Where did you visit today?</label>
+
+<input
+type="text"
+id="location"
+placeholder="Example: GGSH / School / PHC"
+required
+>
+
+
+<label>What work have you done?</label>
+
+<textarea
+id="work"
+placeholder="Write today's work..."
+required
+></textarea>
+
+
+<button
+type="submit"
+id="saveButton"
+>
+SAVE DAILY ENTRY
+</button>
+
+
+</form>
+
+
+<div
+class="success"
+id="success"
+>
+✅ Entry saved successfully!
+</div>
+
+
+<div
+class="error"
+id="error"
+>
+❌ Something went wrong. Please try again.
+</div>
+
+
+</div>
+
+
+</div>
+
+
+<script>
+
+
+// YOUR GOOGLE APPS SCRIPT URL
+
+const SCRIPT_URL =
+"https://script.google.com/macros/s/AKfycbzSxh88CTz76m0qcsQ3PhOpOWTo9hnKe_KDkh4VbDldq4H309hETCUnRu0arbm1LgYE/exec";
+
+
+// Today's date
+
+document.getElementById("date").value =
+new Date().toISOString().split("T")[0];
+
+
+// Form submission
+
+document
+.getElementById("workForm")
+.addEventListener("submit", function(e) {
+
+    e.preventDefault();
+
+
+    const button =
+    document.getElementById("saveButton");
+
+    button.disabled = true;
+
+    button.innerText = "Saving...";
+
+
+    const data = {
+
+        date:
+        document.getElementById("date").value,
+
+        empName:
+        document.getElementById("empName").value,
+
+        empId:
+        document.getElementById("empId").value,
+
+        location:
+        document.getElementById("location").value,
+
+        work:
+        document.getElementById("work").value
+
+    };
+
+
+    fetch(SCRIPT_URL, {
+
+        method: "POST",
+
+        mode: "no-cors",
+
+        headers: {
+
+            "Content-Type":
+            "text/plain;charset=utf-8"
+
+        },
+
+        body: JSON.stringify(data)
+
+    })
+
+    .then(function() {
+
+        document
+        .getElementById("success")
+        .style.display = "block";
+
+
+        document
+        .getElementById("error")
+        .style.display = "none";
+
+
+        document
+        .getElementById("workForm")
+        .reset();
+
+
+        document.getElementById("date").value =
+        new Date().toISOString().split("T")[0];
+
+
+        button.disabled = false;
+
+        button.innerText = "SAVE DAILY ENTRY";
+
+
+        setTimeout(function() {
+
+            document
+            .getElementById("success")
+            .style.display = "none";
+
+        }, 4000);
+
+    })
+
+    .catch(function(error) {
+
+        console.log(error);
+
+
+        document
+        .getElementById("error")
+        .style.display = "block";
+
+
+        button.disabled = false;
+
+        button.innerText = "SAVE DAILY ENTRY";
+
+    });
+
+});
+
+
+</script>
+
+
+</body>
+
+  </html>
