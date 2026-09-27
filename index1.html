@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Individual Learning Dashboard</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f4f6f8;
+    color: #1f2937;
+}
+
+/* Header */
+.header {
+    background: #172554;
+    color: white;
+    padding: 28px 20px;
+    text-align: center;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 28px;
+}
+
+.header p {
+    margin: 8px 0 0;
+    opacity: 0.85;
+}
+
+/* Main container */
+.container {
+    max-width: 1200px;
+    margin: 30px auto;
+    padding: 0 18px;
+}
+
+/* Summary cards */
+.summary {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin-bottom: 30px;
+}
+
+.summary-card {
+    background: white;
+    border-radius: 14px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+}
+
+.summary-card h2 {
+    margin: 0;
+    font-size: 28px;
+    color: #172554;
+}
+
+.summary-card p {
+    margin: 7px 0 0;
+    color: #6b7280;
+}
+
+/* Dashboard */
+.dashboard {
+    background: white;
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+}
+
+.dashboard-title {
+    margin-top: 0;
+    margin-bottom: 5px;
+    color: #172554;
+}
+
+.dashboard-subtitle {
+    color: #6b7280;
+    margin-top: 0;
+}
+
+/* Timeline */
+.timeline {
+    position: relative;
+    margin-top: 35px;
+    padding: 10px 0;
+}
+
+.timeline::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: #dbe2ea;
+    transform: translateX(-50%);
+}
+
+/* Timeline item */
+.timeline-item {
+    position: relative;
+    width: 50%;
+    padding: 10px 40px;
+    margin-bottom: 30px;
+}
+
+.timeline-item.left {
+    left: 0;
+    text-align: right;
+}
+
+.timeline-item.right {
+    left: 50%;
+    text-align: left;
+}
+
+/* Date */
+.date {
+    display: inline-block;
+    background: #172554;
+    color: white;
+    padding: 9px 15px;
+    border-radius: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    position: relative;
+    z-index: 2;
+}
+
+/* Dot */
+.timeline-item::after {
+    content: "";
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    background: white;
+    border: 4px solid #172554;
+    border-radius: 50%;
+    top: 15px;
+    z-index: 3;
+}
+
+.timeline-item.left::after {
+    right: -9px;
+}
+
+.timeline-item.right::after {
+    left: -9px;
+}
+
+/* Learning card */
+.learning-card {
+    margin-top: 12px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 16px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.learning-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.10);
+}
+
+.learning-card h3 {
+    margin: 0 0 8px;
+    font-size: 17px;
+    color: #172554;
+}
+
+.learning-card p {
+    margin: 6px 0;
+    line-height: 1.5;
+    color: #4b5563;
+}
+
+.emotion {
+    font-size: 20px;
+    margin-bottom: 8px;
+}
+
+/* Tooltip */
+.tooltip {
+    position: fixed;
+    display: none;
+    max-width: 330px;
+    background: #111827;
+    color: white;
+    padding: 14px;
+    border-radius: 10px;
+    font-size: 14px;
+    line-height: 1.5;
+    z-index: 1000;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+    pointer-events: none;
+}
+
+/* Detail panel */
+.detail-panel {
+    display: none;
+    margin-top: 25px;
+    padding: 22px;
+    background: #eff6ff;
+    border-left: 5px solid #172554;
+    border-radius: 10px;
+}
+
+.detail-panel h2 {
+    margin-top: 0;
+    color: #172554;
+}
+
+.detail-panel p {
+    line-height: 1.6;
+}
+
+.close-btn {
+    border: none;
+    background: #172554;
+    color: white;
+    padding: 8px 14px;
+    border-radius: 7px;
+    cursor: pointer;
+}
+
+/* Footer */
+.footer {
+    text-align: center;
+    padding: 25px;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+/* Mobile */
+@media (max-width: 700px) {
+
+    .header h1 {
+        font-size: 23px;
+    }
+
+    .summary {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard {
+        padding: 15px;
+    }
+
+    .timeline::before {
+        left: 15px;
+    }
+
+    .timeline-item,
+    .timeline-item.left,
+    .timeline-item.right {
+        width: 100%;
+        left: 0;
+        text-align: left;
+        padding-left: 45px;
+        padding-right: 5px;
+    }
+
+    .timeline-item::after,
+    .timeline-item.left::after,
+    .timeline-item.right::after {
+        left: 7px;
+        right: auto;
+    }
+
+    .tooltip {
+        max-width: 280px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header class="header">
+    <h1>Individual Learning Dashboard</h1>
+    <p>Gandhi Fellowship • Patna • September 2026</p>
+</header>
+
+<main class="container">
+
+    <!-- Summary -->
+    <section class="summary">
+
+        <div class="summary-card">
+            <h2>15</h2>
+            <p>Learning Days</p>
+        </div>
+
+        <div class="summary-card">
+            <h2>11–25</h2>
+            <p>September 2026</p>
+        </div>
+
+        <div class="summary-card">
+            <h2>😊</h2>
+            <p>Learning Journey</p>
+        </div>
+
+    </section>
+
+
+    <!-- Dashboard -->
+    <section class="dashboard">
+
+        <h2 class="dashboard-title">My Learning Journey</h2>
+
+        <p class="dashboard-subtitle">
+            Hover over a date to view the Individual Learning of the Day.
+            Click on a date for detailed information.
+        </p>
+
+        <div class="timeline">
+
+            <!-- 11 SEPTEMBER -->
+            <div class="timeline-item left"
+                 data-date="11 September 2026"
+                 data-emotion="😐"
+                 data-learning="Visited GGSH Patna with Probali to support TAS-1. The school did not support initially, so the activity could not proceed as planned. While waiting, I observed the Hospital Manager's interaction with patients and learned about a suicide prevention session planned for a school.">
+
+                <span class="date">11 Sep</span>
+
+                <div class="learning-card">
+                    <div class="emotion">😐</div>
+                    <h3>Observation & Adaptability</h3>
+                    <p>Observed patient interaction and learned from an unexpected field situation.</p>
+                </div>
+            </div>
+
+
+            <!-- 12 SEPTEMBER -->
+            <div class="timeline-item right"
+                 data-date="12 September 2026"
+                 data-emotion="—"
+                 data-learning="No Individual Learning entry was recorded for this date.">
+
+                <span class="date">12 Sep</span>
+
+                <div class="learning-card">
+                    <h3>No Entry</h3>
+                    <p>No Individual Learning entry recorded.</p>
+                </div>
+            </div>
+
+
+            <!-- 13 SEPTEMBER -->
+            <div class="timeline-item left"
+                 data-date="13 September 2026"
+                 data-emotion="😊"
+                 data-learning="Attended a meeting at the Patna Office, met the new PO-CD and learned about the IHIP portal. I also experienced the importance of meeting and learning with new team members.">
+
+                <span class="date">13 Sep</span>
+
+                <div class="learning-card">
+                    <div class="emotion">😊</div>
+                    <h3>IHIP & Team Learning</h3>
+                    <p>Learned about IHIP and met a new team member.</p>
+                </div>
+            </div>
+
+
+            <!-- 14 SEPTEMBER -->
+            <div class="timeline-item right"
+                 data-date="14 September 2026"
+                 data-emotion="😃"
+                 data-learning="Had a meeting with the TMS team where everyone shared reflections from the previous week. I learned that reflection helps us understand our experiences and improve our learning.">
+
+                <span class="date">14 Sep</span>
+
+                <div class="learning-card">
+                    <div class="emotion">😃</div>
+                    <h3>Reflection</h3>
+                    <p>Learned how regular reflection helps improve learning.</p>
+                </div>
+            </div>
+
+
+            <!-- 15 SEPTEMBER -->
+            <div class="timeline-item left"
+                 data-date="15 September 2026"
+                 data-emotion="☺️"
+                 data-learning="Visited GGSH Patna with Probali to support TAS-1. We managed an unexpected road issue and reached the school. We also conducted awareness on Dengue, Malaria, Filaria and Kala-azar.">
+
+                <span class="date">15 Sep</span>
+
+                <div class="learning-card">
+                    <div class="emotion">☺️</div>
+                    <h3>Adaptability</h3>
+                    <p>Managed an unexpected situation and supported TAS-1 and awareness activities.</p>
+                </div>
+            </div>
+
+
+            <!-- 16 SEPTEMBER -->
+            <div class="timeline-item right"
+                 data-date="16 September 2026"
+                 data-emotion="🤩"
+                 data-learning="Visited AAM Kurkuri with Probali to collect the UDID number of a Filaria patient. It was my first visit to an AAM, where I observed how the facility was managed and learned about the process of collecting the UDID number.">
+
+                <span class="date">16 Sep</span>
+
+                <div class="learning-card">
+                    <div class="emotion">🤩</div>
+                    <h3>First AAM Visit</h3>
+                    <p>Learned about AAM work and the UDID number collection process.</p>
+                </div>
+            </div>
+
+
+            <!-- 17 SEPTEMBER -->
+            <div class="timeline-item left"
+                 data-date="17 September 2026"
+                 data-emotion="☺️"
+                 data-learning="Completed the repair work for my scooty, which had suddenly got punctured during a field visit. I managed the situation and communicated with people for the repair work. I learned to stay calm and handle an unexpected situation.">
+
+                <span class="date">17 Sep</span>
+
+                <div class="learning-card">
+                    <div class="emotion">☺️</div>
+                    <h3>Communication</h3>
+                    <p>Managed scooty repair and learned to communicate with people in an unexpected situation.</p>
+                </div>
+            </div>
+
+
+            <!-- 18 SEPTEMBER -->
+            <div class="timeline-item right"
+                 data-date="18 September 2026"
+                 data-emotion="😮‍💨"
+                 data-learning="Attended three meetings. I learned about NBS and understood the importance of finding gaps in our work first and then discussing those gaps with our PL.">
+
+                <span class="date">18 Sep</span>
+
+                <div class="learning-card">
+                    <div class="emotion">😮‍💨</div>
+                    <h3>NBS & Gap Identification</h3>
+                    <p>Learned about NBS and the importance of identifying gaps with guidance from the PL.</p>
+                </div>
+            </div>
+
+
+            <!-- 19 SEPTEMBER -->
+            <div class="timeline-item left"
+                 data-date="19 September 2026"
+                 data-emotion="🙂"
+                 data-learning="Learned about data entry in the IHIP portal and understood the importance of entering correct information for proper health information management.">
+
+                <span class="date">19 Sep</span>
+
+                <div class="learning-card">
+                    <div class="emotion">🙂</div>
+                    <h3>IHIP Data Entry</h3>
+                    <p>Learned how to enter and update information in IHIP.</p>
+                </div>
+            </div>
+
+
+            <!-- 20 SEPTEMBER -->
+            <div class="timeline-item right"
+                 data-date="20 September 2026"
+                 data-emotion="🙂"
+                 data-learning="Visited GGSH Patna with my co-fellows Probali and Rajdeep to support TAS-1. The State Team also came and guided us during the activity. I learned the importance of guidance and teamwork in field activities.">
+
+                <span class="date">20 Sep</span>
+
+                <div class="learning-card">
+                    <div class="emotion">🙂</div>
+                    <h3>TAS-1 & Teamwork</h3>
+                    <p>Supported TAS-1 and learned from the guidance of the State Team.</p>
+                </div>
+            </div>
+
+
+            <!-- 21 SEPTEMBER -->
+            <div class="timeline-item left"
+                 data-date="21 September 2026"
+                 data-emotion="😮‍💨"
+                 data-learning="Visited GGSH Patna with my PL to understand how licensing is done through coordination with different stakeholders. I learned the importance of communication and coordination during official processes.">
+
+                <span class="date">21 Sep</span>
+
+                <div class="learning-card">
+                    <div class="emotion">😮‍💨</div>
+                    <h3>Licensing & Stakeholders</h3>
+                    <p>Learned about licensing and stakeholder coordination.</p>
+                </div>
+            </div>
+
+
+            <!-- 22 SEPTEMBER -->
+            <div class="timeline-item right"
+                 data-date="22 September 2026"
+                 data-emotion="😊"
+                 data-learning="Visited GGSH Patna again to support TAS-1. The State Team came and gave us guidance. Their guidance helped me understand the TAS-1 process better.">
+
+                <span class="date">22 Sep</span>
+
+                <div class="learning-card">
+                    <div class="emotion">😊</div>
+                    <h3>TAS-1 Guidance</h3>
+                    <p>Supported TAS-1 and learned through State Team guidance.</p>
+                </div>
+            </div>
+
+
+            <!-- 23 SEPTEMBER -->
+            <div class="timeline-item left"
+                 data-date="23 September 2026"
+                 data-emotion="🙂"
+                 data-learning="Revised some concepts related to communicable diseases. The revision helped me refresh my previous learning and feel more confident about the topic.">
+
+                <span class="date">23 Sep</span>
+
+                <div class="learning-card">
+                    <div class="emotion">🙂</div>
+                    <h3>Communicable Diseases</h3>
+                    <p>Revised concepts related to communicable diseases.</p>
+                </div>
+            </div>
+
+
+            <!-- 24 SEPTEMBER -->
+            <div class="timeline-item right"
+                 data-date="24 September 2026"
+                 data-emotion="😊"
+                 data-learning="Had a meeting at the Patna Office where I learned more about the IHIP portal and how to use it properly. I also learned how to do proper monthly planning.">
+
+                <span class="date">24 Sep</span>
+
+                <div class="learning-card">
+                    <div class="emotion">😊</div>
+                    <h3>IHIP & Monthly Planning</h3>
+                    <p>Learned about IHIP and how to do proper monthly planning.</p>
+                </div>
+            </div>
+
+
+            <!-- 25 SEPTEMBER -->
+            <div class="timeline-item left"
+                 data-date="25 September 2026"
+                 data-emotion="👍"
+                 data-learning="Learned how to do proper monthly planning. I understood how planning activities in advance helps organize work, manage time and keep goals clear.">
+
+                <span class="date">25 Sep</span>
+
+                <div class="learning-card">
+                    <div class="emotion">👍</div>
+                    <h3>Monthly Planning</h3>
+                    <p>Learned how proper monthly planning helps organize work.</p>
+                </div>
+            </div>
+
+        </div>
+
+
+        <!-- Detail panel -->
+        <div class="detail-panel" id="detailPanel">
+
+            <h2 id="detailDate"></h2>
+
+            <p>
+                <strong>Top Emotion:</strong>
+                <span id="detailEmotion"></span>
+            </p>
+
+            <p id="detailLearning"></p>
+
+            <button class="close-btn" onclick="closeDetails()">
+                Close
+            </button>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<footer class="footer">
+    Individual Learning Dashboard • Gandhi Fellowship • Patna
+</footer>
+
+
+<!-- Tooltip -->
+<div class="tooltip" id="tooltip"></div>
+
+
+<script>
+
+const items = document.querySelectorAll(".timeline-item");
+const tooltip = document.getElementById("tooltip");
+
+const detailPanel = document.getElementById("detailPanel");
+const detailDate = document.getElementById("detailDate");
+const detailEmotion = document.getElementById("detailEmotion");
+const detailLearning = document.getElementById("detailLearning");
+
+
+/* Hover tooltip */
+items.forEach(item => {
+
+    item.addEventListener("mouseenter", function(event) {
+
+        const date = this.dataset.date;
+        const emotion = this.dataset.emotion;
+        const learning = this.dataset.learning;
+
+        tooltip.innerHTML =
+            "<strong>" + date + "</strong><br><br>" +
+            "Top Emotion: " + emotion + "<br><br>" +
+            learning;
+
+        tooltip.style.display = "block";
+
+    });
+
+
+    item.addEventListener("mousemove", function(event) {
+
+        let x = event.clientX + 15;
+        let y = event.clientY + 15;
+
+        if (x + 340 > window.innerWidth) {
+            x = event.clientX - 350;
+        }
+
+        if (y + 250 > window.innerHeight) {
+            y = event.clientY - 250;
+        }
+
+        tooltip.style.left = x + "px";
+        tooltip.style.top = y + "px";
+
+    });
+
+
+    item.addEventListener("mouseleave", function() {
+
+        tooltip.style.display = "none";
+
+    });
+
+
+    /* Click to show details */
+    item.addEventListener("click", function() {
+
+        detailDate.textContent = this.dataset.date;
+        detailEmotion.textContent = this.dataset.emotion;
+        detailLearning.textContent = this.dataset.learning;
+
+        detailPanel.style.display = "block";
+
+        detailPanel.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+        });
+
+    });
+
+});
+
+
+/* Close details */
+function closeDetails() {
+
+    detailPanel.style.display = "none";
+
+}
+
+</script>
+
+</body>
+  </html>
