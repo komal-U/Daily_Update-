@@ -4,687 +4,734 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Individual Learning Dashboard</title>
+<title>Individual Learning Dashboard | Gandhi Fellow</title>
 
 <style>
+:root {
+  --primary: #5b4bdb;
+  --secondary: #8b5cf6;
+  --background: #f5f6ff;
+  --card: #ffffff;
+  --text: #252746;
+  --muted: #737791;
+  --border: #e7e7f5;
+  --green: #168568;
+  --orange: #d97706;
+}
+
 * {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 body {
-    margin: 0;
-    font-family: Arial, Helvetica, sans-serif;
-    background: #f4f6f8;
-    color: #1f2937;
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: var(--background);
+  color: var(--text);
 }
 
-/* Header */
-.header {
-    background: #172554;
-    color: white;
-    padding: 28px 20px;
-    text-align: center;
+header {
+  background: linear-gradient(135deg, #4338ca, #8b5cf6);
+  color: white;
+  padding: 35px 20px;
+  text-align: center;
 }
 
-.header h1 {
-    margin: 0;
-    font-size: 28px;
+header h1 {
+  margin: 0 0 12px;
+  font-size: clamp(24px, 4vw, 36px);
 }
 
-.header p {
-    margin: 8px 0 0;
-    opacity: 0.85;
+header p {
+  margin: 7px 0;
+  line-height: 1.6;
 }
 
-/* Main container */
 .container {
-    max-width: 1200px;
-    margin: 30px auto;
-    padding: 0 18px;
+  width: min(1200px, 94%);
+  margin: 25px auto 45px;
 }
 
-/* Summary cards */
 .summary {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 18px;
-    margin-bottom: 30px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  margin-bottom: 25px;
 }
 
 .summary-card {
-    background: white;
-    border-radius: 14px;
-    padding: 20px;
-    text-align: center;
-    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 5px 18px rgba(55, 48, 120, 0.05);
 }
 
-.summary-card h2 {
-    margin: 0;
-    font-size: 28px;
-    color: #172554;
+.summary-card .number {
+  font-size: 30px;
+  font-weight: bold;
+  color: var(--primary);
 }
 
 .summary-card p {
-    margin: 7px 0 0;
-    color: #6b7280;
+  color: var(--muted);
+  margin-bottom: 0;
+  font-size: 14px;
 }
 
-/* Dashboard */
-.dashboard {
-    background: white;
-    border-radius: 16px;
-    padding: 25px;
-    box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  gap: 22px;
+  align-items: start;
 }
 
-.dashboard-title {
-    margin-top: 0;
-    margin-bottom: 5px;
-    color: #172554;
+.panel {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 22px;
+  box-shadow: 0 5px 20px rgba(55, 48, 120, 0.05);
 }
 
-.dashboard-subtitle {
-    color: #6b7280;
-    margin-top: 0;
+.panel h2 {
+  margin-top: 0;
+  font-size: 21px;
 }
 
-/* Timeline */
-.timeline {
-    position: relative;
-    margin-top: 35px;
-    padding: 10px 0;
+.panel-description {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.6;
 }
 
-.timeline::before {
-    content: "";
-    position: absolute;
-    left: 50%;
-    top: 0;
-    bottom: 0;
-    width: 3px;
-    background: #dbe2ea;
-    transform: translateX(-50%);
+.month-heading {
+  margin: 22px 0 12px;
+  font-size: 14px;
+  color: var(--primary);
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
-/* Timeline item */
-.timeline-item {
-    position: relative;
-    width: 50%;
-    padding: 10px 40px;
-    margin-bottom: 30px;
+.date-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 9px;
 }
 
-.timeline-item.left {
-    left: 0;
-    text-align: right;
+.date-circle {
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 2px solid #e5e2ff;
+  background: #f8f7ff;
+  color: var(--primary);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transition: 0.2s ease;
+  min-width: 0;
 }
 
-.timeline-item.right {
-    left: 50%;
-    text-align: left;
+.date-circle:hover {
+  transform: translateY(-3px);
+  border-color: var(--primary);
+  background: #efedff;
 }
 
-/* Date */
-.date {
-    display: inline-block;
-    background: #172554;
-    color: white;
-    padding: 9px 15px;
-    border-radius: 20px;
-    font-weight: bold;
-    cursor: pointer;
-    position: relative;
-    z-index: 2;
+.date-circle.active {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+  box-shadow: 0 5px 12px rgba(91, 75, 219, 0.25);
 }
 
-/* Dot */
-.timeline-item::after {
-    content: "";
-    position: absolute;
-    width: 15px;
-    height: 15px;
-    background: white;
-    border: 4px solid #172554;
-    border-radius: 50%;
-    top: 15px;
-    z-index: 3;
+.date-circle .day {
+  font-size: 18px;
+  font-weight: bold;
 }
 
-.timeline-item.left::after {
-    right: -9px;
+.date-circle .emotion {
+  font-size: 15px;
+  margin-top: 3px;
 }
 
-.timeline-item.right::after {
-    left: -9px;
+.date-circle.no-entry {
+  border-style: dashed;
+  color: #9899ac;
+  background: #fafafa;
 }
 
-/* Learning card */
-.learning-card {
-    margin-top: 12px;
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    padding: 16px;
-    cursor: pointer;
-    transition: 0.2s;
+.date-circle.no-entry.active {
+  background: #68677c;
+  color: white;
+  border-color: #68677c;
 }
 
-.learning-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.10);
-}
-
-.learning-card h3 {
-    margin: 0 0 8px;
-    font-size: 17px;
-    color: #172554;
-}
-
-.learning-card p {
-    margin: 6px 0;
-    line-height: 1.5;
-    color: #4b5563;
-}
-
-.emotion {
-    font-size: 20px;
-    margin-bottom: 8px;
-}
-
-/* Tooltip */
-.tooltip {
-    position: fixed;
-    display: none;
-    max-width: 330px;
-    background: #111827;
-    color: white;
-    padding: 14px;
-    border-radius: 10px;
-    font-size: 14px;
-    line-height: 1.5;
-    z-index: 1000;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.25);
-    pointer-events: none;
-}
-
-/* Detail panel */
 .detail-panel {
-    display: none;
-    margin-top: 25px;
-    padding: 22px;
-    background: #eff6ff;
-    border-left: 5px solid #172554;
-    border-radius: 10px;
+  min-height: 430px;
 }
 
-.detail-panel h2 {
-    margin-top: 0;
-    color: #172554;
+.detail-header {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 16px;
+  margin-bottom: 20px;
 }
 
-.detail-panel p {
-    line-height: 1.6;
+.detail-header h2 {
+  margin: 0 0 10px;
+  line-height: 1.4;
 }
 
-.close-btn {
-    border: none;
-    background: #172554;
-    color: white;
-    padding: 8px 14px;
-    border-radius: 7px;
-    cursor: pointer;
+.emotion-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 13px;
+  border-radius: 30px;
+  background: #f0edff;
+  color: var(--primary);
+  font-size: 14px;
+  font-weight: bold;
 }
 
-/* Footer */
-.footer {
-    text-align: center;
-    padding: 25px;
-    color: #6b7280;
-    font-size: 14px;
+.section {
+  margin: 23px 0;
 }
 
-/* Mobile */
-@media (max-width: 700px) {
+.section h3 {
+  font-size: 16px;
+  margin-bottom: 10px;
+}
 
-    .header h1 {
-        font-size: 23px;
-    }
+.section p,
+.section li {
+  color: #555873;
+  line-height: 1.75;
+  font-size: 14px;
+}
 
-    .summary {
-        grid-template-columns: 1fr;
-    }
+.section ul {
+  padding-left: 21px;
+  margin: 8px 0;
+}
 
-    .dashboard {
-        padding: 15px;
-    }
+.takeaway {
+  background: #f0fdf8;
+  border-left: 4px solid var(--green);
+  padding: 15px;
+  border-radius: 10px;
+}
 
-    .timeline::before {
-        left: 15px;
-    }
+.takeaway h3 {
+  color: var(--green);
+  margin-top: 0;
+}
 
-    .timeline-item,
-    .timeline-item.left,
-    .timeline-item.right {
-        width: 100%;
-        left: 0;
-        text-align: left;
-        padding-left: 45px;
-        padding-right: 5px;
-    }
+.challenge {
+  background: #fff8eb;
+  border-left: 4px solid var(--orange);
+  padding: 15px;
+  border-radius: 10px;
+}
 
-    .timeline-item::after,
-    .timeline-item.left::after,
-    .timeline-item.right::after {
-        left: 7px;
-        right: auto;
-    }
+.challenge h3 {
+  color: var(--orange);
+  margin-top: 0;
+}
 
-    .tooltip {
-        max-width: 280px;
-    }
+.no-entry-message {
+  background: #f8f8fc;
+  border: 1px dashed #c8c8d9;
+  border-radius: 14px;
+  padding: 22px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.legend {
+  margin-top: 20px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+footer {
+  text-align: center;
+  padding: 25px 15px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+@media (max-width: 800px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .summary {
+    grid-template-columns: 1fr;
+  }
+
+  .summary-card {
+    padding: 14px;
+  }
+
+  .summary-card .number {
+    font-size: 25px;
+  }
+
+  .date-grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 7px;
+  }
+
+  .panel {
+    padding: 17px;
+  }
+}
+
+@media (max-width: 420px) {
+  .date-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .date-circle .day {
+    font-size: 16px;
+  }
 }
 </style>
 </head>
 
 <body>
 
-<header class="header">
-    <h1>Individual Learning Dashboard</h1>
-    <p>Gandhi Fellowship • Patna • September 2026</p>
+<header>
+  <h1>🌱 Individual Learning Dashboard</h1>
+  <p><strong>Health System Immersion & Field Learning</strong></p>
+  <p>Gandhi Fellow | Batch 19 | Patna</p>
+  <p>11 September 2026 – 13 October 2026</p>
 </header>
 
 <main class="container">
 
-    <!-- Summary -->
-    <section class="summary">
+  <div class="summary">
+    <div class="summary-card">
+      <div class="number" id="totalDays">33</div>
+      <p>Days in Dashboard</p>
+    </div>
 
-        <div class="summary-card">
-            <h2>15</h2>
-            <p>Learning Days</p>
-        </div>
+    <div class="summary-card">
+      <div class="number" id="recordedDays">0</div>
+      <p>Days with Recorded Activities</p>
+    </div>
 
-        <div class="summary-card">
-            <h2>11–25</h2>
-            <p>September 2026</p>
-        </div>
+    <div class="summary-card">
+      <div class="number" id="missingDays">0</div>
+      <p>Dates Awaiting an Entry</p>
+    </div>
+  </div>
 
-        <div class="summary-card">
-            <h2>😊</h2>
-            <p>Learning Journey</p>
-        </div>
+  <div class="layout">
 
+    <section class="panel">
+      <h2>📅 Explore by Date</h2>
+      <p class="panel-description">
+        Select a circular date to explore the field activity, learning,
+        key takeaway, emotion and challenges recorded for that day.
+      </p>
+
+      <div class="month-heading">September 2026</div>
+      <div class="date-grid" id="septemberDates"></div>
+
+      <div class="month-heading">October 2026</div>
+      <div class="date-grid" id="octoberDates"></div>
+
+      <div class="legend">
+        😊 Emotion is displayed for recorded activities. Where no emotion
+        was supplied, a default 😊 is used. Dates without an entry are
+        clearly marked.
+        <br>
+        🟣 Recorded activity &nbsp; | &nbsp; ⚪ No entry recorded
+      </div>
     </section>
 
-
-    <!-- Dashboard -->
-    <section class="dashboard">
-
-        <h2 class="dashboard-title">My Learning Journey</h2>
-
-        <p class="dashboard-subtitle">
-            Hover over a date to view the Individual Learning of the Day.
-            Click on a date for detailed information.
+    <section class="panel detail-panel" id="details">
+      <div class="detail-header">
+        <h2>Welcome to Your Learning Journey</h2>
+        <p class="panel-description">
+          Click any date on the left to view its details.
         </p>
-
-        <div class="timeline">
-
-            <!-- 11 SEPTEMBER -->
-            <div class="timeline-item left"
-                 data-date="11 September 2026"
-                 data-emotion="😐"
-                 data-learning="Visited GGSH Patna with Probali to support TAS-1. The school did not support initially, so the activity could not proceed as planned. While waiting, I observed the Hospital Manager's interaction with patients and learned about a suicide prevention session planned for a school.">
-
-                <span class="date">11 Sep</span>
-
-                <div class="learning-card">
-                    <div class="emotion">😐</div>
-                    <h3>Observation & Adaptability</h3>
-                    <p>Observed patient interaction and learned from an unexpected field situation.</p>
-                </div>
-            </div>
-
-
-            <!-- 12 SEPTEMBER -->
-            <div class="timeline-item right"
-                 data-date="12 September 2026"
-                 data-emotion="—"
-                 data-learning="No Individual Learning entry was recorded for this date.">
-
-                <span class="date">12 Sep</span>
-
-                <div class="learning-card">
-                    <h3>No Entry</h3>
-                    <p>No Individual Learning entry recorded.</p>
-                </div>
-            </div>
-
-
-            <!-- 13 SEPTEMBER -->
-            <div class="timeline-item left"
-                 data-date="13 September 2026"
-                 data-emotion="😊"
-                 data-learning="Attended a meeting at the Patna Office, met the new PO-CD and learned about the IHIP portal. I also experienced the importance of meeting and learning with new team members.">
-
-                <span class="date">13 Sep</span>
-
-                <div class="learning-card">
-                    <div class="emotion">😊</div>
-                    <h3>IHIP & Team Learning</h3>
-                    <p>Learned about IHIP and met a new team member.</p>
-                </div>
-            </div>
-
-
-            <!-- 14 SEPTEMBER -->
-            <div class="timeline-item right"
-                 data-date="14 September 2026"
-                 data-emotion="😃"
-                 data-learning="Had a meeting with the TMS team where everyone shared reflections from the previous week. I learned that reflection helps us understand our experiences and improve our learning.">
-
-                <span class="date">14 Sep</span>
-
-                <div class="learning-card">
-                    <div class="emotion">😃</div>
-                    <h3>Reflection</h3>
-                    <p>Learned how regular reflection helps improve learning.</p>
-                </div>
-            </div>
-
-
-            <!-- 15 SEPTEMBER -->
-            <div class="timeline-item left"
-                 data-date="15 September 2026"
-                 data-emotion="☺️"
-                 data-learning="Visited GGSH Patna with Probali to support TAS-1. We managed an unexpected road issue and reached the school. We also conducted awareness on Dengue, Malaria, Filaria and Kala-azar.">
-
-                <span class="date">15 Sep</span>
-
-                <div class="learning-card">
-                    <div class="emotion">☺️</div>
-                    <h3>Adaptability</h3>
-                    <p>Managed an unexpected situation and supported TAS-1 and awareness activities.</p>
-                </div>
-            </div>
-
-
-            <!-- 16 SEPTEMBER -->
-            <div class="timeline-item right"
-                 data-date="16 September 2026"
-                 data-emotion="🤩"
-                 data-learning="Visited AAM Kurkuri with Probali to collect the UDID number of a Filaria patient. It was my first visit to an AAM, where I observed how the facility was managed and learned about the process of collecting the UDID number.">
-
-                <span class="date">16 Sep</span>
-
-                <div class="learning-card">
-                    <div class="emotion">🤩</div>
-                    <h3>First AAM Visit</h3>
-                    <p>Learned about AAM work and the UDID number collection process.</p>
-                </div>
-            </div>
-
-
-            <!-- 17 SEPTEMBER -->
-            <div class="timeline-item left"
-                 data-date="17 September 2026"
-                 data-emotion="☺️"
-                 data-learning="Completed the repair work for my scooty, which had suddenly got punctured during a field visit. I managed the situation and communicated with people for the repair work. I learned to stay calm and handle an unexpected situation.">
-
-                <span class="date">17 Sep</span>
-
-                <div class="learning-card">
-                    <div class="emotion">☺️</div>
-                    <h3>Communication</h3>
-                    <p>Managed scooty repair and learned to communicate with people in an unexpected situation.</p>
-                </div>
-            </div>
-
-
-            <!-- 18 SEPTEMBER -->
-            <div class="timeline-item right"
-                 data-date="18 September 2026"
-                 data-emotion="😮‍💨"
-                 data-learning="Attended three meetings. I learned about NBS and understood the importance of finding gaps in our work first and then discussing those gaps with our PL.">
-
-                <span class="date">18 Sep</span>
-
-                <div class="learning-card">
-                    <div class="emotion">😮‍💨</div>
-                    <h3>NBS & Gap Identification</h3>
-                    <p>Learned about NBS and the importance of identifying gaps with guidance from the PL.</p>
-                </div>
-            </div>
-
-
-            <!-- 19 SEPTEMBER -->
-            <div class="timeline-item left"
-                 data-date="19 September 2026"
-                 data-emotion="🙂"
-                 data-learning="Learned about data entry in the IHIP portal and understood the importance of entering correct information for proper health information management.">
-
-                <span class="date">19 Sep</span>
-
-                <div class="learning-card">
-                    <div class="emotion">🙂</div>
-                    <h3>IHIP Data Entry</h3>
-                    <p>Learned how to enter and update information in IHIP.</p>
-                </div>
-            </div>
-
-
-            <!-- 20 SEPTEMBER -->
-            <div class="timeline-item right"
-                 data-date="20 September 2026"
-                 data-emotion="🙂"
-                 data-learning="Visited GGSH Patna with my co-fellows Probali and Rajdeep to support TAS-1. The State Team also came and guided us during the activity. I learned the importance of guidance and teamwork in field activities.">
-
-                <span class="date">20 Sep</span>
-
-                <div class="learning-card">
-                    <div class="emotion">🙂</div>
-                    <h3>TAS-1 & Teamwork</h3>
-                    <p>Supported TAS-1 and learned from the guidance of the State Team.</p>
-                </div>
-            </div>
-
-
-            <!-- 21 SEPTEMBER -->
-            <div class="timeline-item left"
-                 data-date="21 September 2026"
-                 data-emotion="😮‍💨"
-                 data-learning="Visited GGSH Patna with my PL to understand how licensing is done through coordination with different stakeholders. I learned the importance of communication and coordination during official processes.">
-
-                <span class="date">21 Sep</span>
-
-                <div class="learning-card">
-                    <div class="emotion">😮‍💨</div>
-                    <h3>Licensing & Stakeholders</h3>
-                    <p>Learned about licensing and stakeholder coordination.</p>
-                </div>
-            </div>
-
-
-            <!-- 22 SEPTEMBER -->
-            <div class="timeline-item right"
-                 data-date="22 September 2026"
-                 data-emotion="😊"
-                 data-learning="Visited GGSH Patna again to support TAS-1. The State Team came and gave us guidance. Their guidance helped me understand the TAS-1 process better.">
-
-                <span class="date">22 Sep</span>
-
-                <div class="learning-card">
-                    <div class="emotion">😊</div>
-                    <h3>TAS-1 Guidance</h3>
-                    <p>Supported TAS-1 and learned through State Team guidance.</p>
-                </div>
-            </div>
-
-
-            <!-- 23 SEPTEMBER -->
-            <div class="timeline-item left"
-                 data-date="23 September 2026"
-                 data-emotion="🙂"
-                 data-learning="Revised some concepts related to communicable diseases. The revision helped me refresh my previous learning and feel more confident about the topic.">
-
-                <span class="date">23 Sep</span>
-
-                <div class="learning-card">
-                    <div class="emotion">🙂</div>
-                    <h3>Communicable Diseases</h3>
-                    <p>Revised concepts related to communicable diseases.</p>
-                </div>
-            </div>
-
-
-            <!-- 24 SEPTEMBER -->
-            <div class="timeline-item right"
-                 data-date="24 September 2026"
-                 data-emotion="😊"
-                 data-learning="Had a meeting at the Patna Office where I learned more about the IHIP portal and how to use it properly. I also learned how to do proper monthly planning.">
-
-                <span class="date">24 Sep</span>
-
-                <div class="learning-card">
-                    <div class="emotion">😊</div>
-                    <h3>IHIP & Monthly Planning</h3>
-                    <p>Learned about IHIP and how to do proper monthly planning.</p>
-                </div>
-            </div>
-
-
-            <!-- 25 SEPTEMBER -->
-            <div class="timeline-item left"
-                 data-date="25 September 2026"
-                 data-emotion="👍"
-                 data-learning="Learned how to do proper monthly planning. I understood how planning activities in advance helps organize work, manage time and keep goals clear.">
-
-                <span class="date">25 Sep</span>
-
-                <div class="learning-card">
-                    <div class="emotion">👍</div>
-                    <h3>Monthly Planning</h3>
-                    <p>Learned how proper monthly planning helps organize work.</p>
-                </div>
-            </div>
-
-        </div>
-
-
-        <!-- Detail panel -->
-        <div class="detail-panel" id="detailPanel">
-
-            <h2 id="detailDate"></h2>
-
-            <p>
-                <strong>Top Emotion:</strong>
-                <span id="detailEmotion"></span>
-            </p>
-
-            <p id="detailLearning"></p>
-
-            <button class="close-btn" onclick="closeDetails()">
-                Close
-            </button>
-
-        </div>
-
+      </div>
+      <p>Select a date to begin exploring your learning journey.</p>
     </section>
 
+  </div>
 </main>
 
-
-<footer class="footer">
-    Individual Learning Dashboard • Gandhi Fellowship • Patna
+<footer>
+  Individual Learning of the Day | Gandhi Fellow Batch 19
+  <br>
+  Reflect • Learn • Improve
 </footer>
 
-
-<!-- Tooltip -->
-<div class="tooltip" id="tooltip"></div>
-
-
 <script>
+/*
+  Only recorded information has been added below.
+  Dates not included in this list will display "No entry recorded".
+*/
 
-const items = document.querySelectorAll(".timeline-item");
-const tooltip = document.getElementById("tooltip");
+const entries = {
 
-const detailPanel = document.getElementById("detailPanel");
-const detailDate = document.getElementById("detailDate");
-const detailEmotion = document.getElementById("detailEmotion");
-const detailLearning = document.getElementById("detailLearning");
+  "2026-09-11": {
+    emotion: "😐",
+    activity: [
+      "Visited GGSH for TAS-1-related field support.",
+      "Observed patient interaction by the hospital manager and a discussion related to a school suicide-prevention session."
+    ],
+    learning: [
+      "Observed the importance of respectful patient interaction.",
+      "Learned that field activities depend on coordination and support from different stakeholders.",
+      "Understood the value of observing how health staff communicate with people."
+    ],
+    takeaway:
+      "Observation of real situations helps me understand how communication and coordination influence health-related activities.",
+    challenges:
+      "School and parent support and initial coordination with the lab technician were challenges during the TAS-1-related work."
+  },
 
+  "2026-09-13": {
+    emotion: "😊",
+    activity: [
+      "Attended a meeting at the Patna office.",
+      "Interacted with the new PO-CD team.",
+      "Learned about the IHIP portal."
+    ],
+    learning: [
+      "Improved my understanding of the IHIP portal.",
+      "Learned about coordination and communication within the office team.",
+      "Understood the importance of digital systems in health reporting."
+    ],
+    takeaway:
+      "Understanding digital health systems and coordinating with team members are important parts of field and programme work."
+  },
 
-/* Hover tooltip */
-items.forEach(item => {
+  "2026-09-14": {
+    emotion: "😃",
+    activity: [
+      "Attended a TMS reflection meeting."
+    ],
+    learning: [
+      "Learned the importance of reflection in understanding my experiences.",
+      "Recognized that discussing experiences with others can help identify learning points."
+    ],
+    takeaway:
+      "Regular reflection helps me understand my experiences and improve my future actions."
+  },
 
-    item.addEventListener("mouseenter", function(event) {
+  "2026-09-15": {
+    emotion: "☺️",
+    activity: [
+      "Visited GGSH for TAS-1-related support.",
+      "Supported awareness about dengue, malaria, Filaria and Kala-azar."
+    ],
+    learning: [
+      "Learned the importance of communicating health messages in simple language.",
+      "Understood that awareness activities can help students learn about disease prevention.",
+      "Recognized the need to coordinate before conducting field activities."
+    ],
+    takeaway:
+      "Simple and clear health communication can help students understand disease prevention.",
+    challenges:
+      "I faced a route-related delay while travelling to the field location."
+  },
 
-        const date = this.dataset.date;
-        const emotion = this.dataset.emotion;
-        const learning = this.dataset.learning;
+  "2026-09-16": {
+    emotion: "😊",
+    activity: [
+      "Visited AAM Kurkuri to collect the UDID number of a person affected by Filaria.",
+      "Observed the functioning and management of the AAM."
+    ],
+    learning: [
+      "Learned about the importance of collecting accurate information for follow-up.",
+      "Gained exposure to an AAM and observed its management."
+    ],
+    takeaway:
+      "Accurate information and well-managed health facilities support programme implementation."
+  },
 
-        tooltip.innerHTML =
-            "<strong>" + date + "</strong><br><br>" +
-            "Top Emotion: " + emotion + "<br><br>" +
-            learning;
+  "2026-09-18": {
+    emotion: "😊",
+    activity: [
+      "Discussed NBS-related meetings and gaps with the PL."
+    ],
+    learning: [
+      "Learned the importance of identifying gaps in field activities.",
+      "Understood that discussion with programme leaders can help clarify next steps."
+    ],
+    takeaway:
+      "Discussing field-level gaps with the team helps improve understanding and coordination."
+  },
 
-        tooltip.style.display = "block";
+  "2026-09-20": {
+    emotion: "🙂",
+    activity: [
+      "Visited GGSH for TAS-1-related work with Probali and Rajdeep.",
+      "Received guidance from the State Team."
+    ],
+    learning: [
+      "Learned from the State Team's guidance.",
+      "Understood the importance of teamwork and coordination during field activities."
+    ],
+    takeaway:
+      "Guidance from experienced team members helps me improve my understanding and fieldwork."
+  },
 
-    });
+  "2026-09-21": {
+    emotion: "😮‍💨",
+    activity: [
+      "Discussed stakeholder coordination and licensing-related work with the PL."
+    ],
+    learning: [
+      "Learned about the importance of stakeholder coordination.",
+      "Understood that different stakeholders may have different roles and requirements."
+    ],
+    takeaway:
+      "Clear communication and coordination are important when working with multiple stakeholders."
+  },
 
+  "2026-09-22": {
+    emotion: "😊",
+    activity: [
+      "Visited GGSH for TAS-1-related work.",
+      "Received guidance from the State Team."
+    ],
+    learning: [
+      "Strengthened my understanding of TAS-1-related field activities.",
+      "Learned from the guidance and experience shared by the State Team."
+    ],
+    takeaway:
+      "Continuous guidance and practical exposure help strengthen my understanding of field processes."
+  },
 
-    item.addEventListener("mousemove", function(event) {
+  "2026-09-23": {
+    emotion: "🙂",
+    activity: [
+      "Revised communicable diseases."
+    ],
+    learning: [
+      "Revised key concepts related to communicable diseases.",
+      "Strengthened my understanding of health topics relevant to field activities."
+    ],
+    takeaway:
+      "Regular revision helps me retain health-related knowledge and apply it more effectively."
+  },
 
-        let x = event.clientX + 15;
-        let y = event.clientY + 15;
+  "2026-09-24": {
+    emotion: "😊",
+    activity: [
+      "Attended a Patna office meeting.",
+      "Learned about the IHIP portal and monthly planning."
+    ],
+    learning: [
+      "Improved my understanding of the IHIP portal.",
+      "Learned the importance of structured monthly planning.",
+      "Understood that planning helps organize activities and responsibilities."
+    ],
+    takeaway:
+      "Good planning and proper use of reporting systems support organized programme implementation."
+  },
 
-        if (x + 340 > window.innerWidth) {
-            x = event.clientX - 350;
-        }
+  "2026-09-25": {
+    emotion: "👍",
+    activity: [
+      "Participated in monthly planning."
+    ],
+    learning: [
+      "Learned the importance of organizing tasks and activities in advance.",
+      "Understood that monthly planning helps provide direction to the team's work."
+    ],
+    takeaway:
+      "A clear plan helps me organize my work and use time more effectively."
+  },
 
-        if (y + 250 > window.innerHeight) {
-            y = event.clientY - 250;
-        }
+  "2026-09-28": {
+    emotion: "😊",
+    activity: [
+      "Visited Digha for the Night Blood Survey (NBS).",
+      "Experienced the NBS process practically for the first time.",
+      "Observed good community participation on the first day."
+    ],
+    learning: [
+      "Understood the difference between learning about NBS in training and experiencing it in the field.",
+      "Learned how the NBS process is carried out in the community.",
+      "Recognized that community participation supports successful field activities."
+    ],
+    takeaway:
+      "My first NBS experience helped me connect theoretical knowledge with practical fieldwork and understand the importance of community participation."
+  },
 
-        tooltip.style.left = x + "px";
-        tooltip.style.top = y + "px";
+  "2026-09-29": {
+    emotion: "😊",
+    activity: [
+      "Visited Digha for NBS.",
+      "Observed the State Team's field visit and guidance.",
+      "Learned about lancet selection, community engagement and the testing process."
+    ],
+    learning: [
+      "Learned which lancet to use during the process.",
+      "Understood the importance of community engagement.",
+      "Learned that if community members do not come to the testing location, the LT and team may conduct door-to-door visits for testing."
+    ],
+    takeaway:
+      "Successful NBS requires correct procedures, community engagement and flexible approaches to reaching people."
+  },
 
-    });
+  "2026-09-30": {
+    emotion: "😊",
+    activity: [
+      "Worked on the Health System Immersion (HSI) PowerPoint presentation."
+    ],
+    learning: [
+      "Learned how to organize field observations and experiences into a structured presentation.",
+      "Reflected on my health-system exposure and key learning points."
+    ],
+    takeaway:
+      "Documenting field experiences helps me organize my observations and communicate my learning clearly."
+  },
 
+  "2026-10-01": {
+    emotion: "😊",
+    activity: [
+      "Continued preparing the Health System Immersion (HSI) PowerPoint presentation."
+    ],
+    learning: [
+      "Continued organizing my field experiences and learning points.",
+      "Practised presenting observations in a clear and structured way."
+    ],
+    takeaway:
+      "A well-structured presentation helps communicate field experiences and learning more effectively."
+  },
 
-    item.addEventListener("mouseleave", function() {
+  "2026-10-02": {
+    emotion: "😊",
+    activity: [
+      "Attended the Special Gram Sabha at Bela Panchayat, Bihta Block, on Gandhi Jayanti.",
+      "Participated in discussions around nine themes, with a focus on Healthy Panchayat.",
+      "Topics included institutional delivery, TB-Mukt Panchayat, early identification and treatment, Filaria prevention and management, and disability certificates for government schemes."
+    ],
+    learning: [
+      "Learned how Panchayat-level discussions can bring attention to health and community priorities.",
+      "Understood the importance of early identification and treatment of diseases.",
+      "Recognized the role of community institutions in promoting health awareness and access to services."
+    ],
+    takeaway:
+      "Community participation and Panchayat-level planning can help connect health priorities with local action."
+  },
 
-        tooltip.style.display = "none";
+  "2026-10-03": {
+    emotion: "😊",
+    activity: [
+      "Visited the Malaria Office.",
+      "Visited an AAM to inform the team that support would be provided for NBS."
+    ],
+    learning: [
+      "Learned the importance of informing health facilities before field activities.",
+      "Understood that coordination helps frontline teams prepare for planned work."
+    ],
+    takeaway:
+      "Timely communication with health facilities supports better coordination for field activities."
+  },
 
-    });
+  "2026-10-05": {
+    emotion: "😊",
+    activity: [
+      "Attended the HSI consolidation with fellows from Nawada, Nalanda, Gaya, Aurangabad, Patna and Rohtas."
+    ],
+    learning: [
+      "Reflected on my understanding of the health system.",
+      "Compared learning experiences through discussion with fellows from different districts.",
+      "Gained confidence in my understanding of HSI."
+    ],
+    takeaway:
+      "Sharing and reflecting on field experiences with other fellows strengthened my confidence and understanding."
+  },
 
+  "2026-10-06": {
+    emotion: "😊",
+    activity: [
+      "Learned how to prepare a PowerPoint presentation on district-level work related to Filaria and Kala-azar."
+    ],
+    learning: [
+      "Learned how to organize programme information for a presentation.",
+      "Strengthened my understanding of communicating district-level health activities."
+    ],
+    takeaway:
+      "Clear presentation of programme information helps others understand field activities and progress."
+  },
 
-    /* Click to show details */
-    item.addEventListener("click", function() {
+  "2026-10-07": {
+    emotion: "😊",
+    activity: [
+      "Attended the Patna review meeting.",
+      "Learned about the UDID portal."
+    ],
+    learning: [
+      "Gained an understanding of the UDID portal.",
+      "Learned about the importance of review meetings for sharing progress and clarifying processes."
+    ],
+    takeaway:
+      "Understanding relevant portals and participating in review meetings helps me strengthen my programme knowledge."
+  },
 
-        detailDate.textContent = this.dataset.date;
-        detailEmotion.textContent = this.dataset.emotion;
-        detailLearning.textContent = this.dataset.learning;
+  "2026-10-08": {
+    emotion: "😊",
+    activity: [
+      "Visited the Malaria Office.",
+      "Attended IRS training provided to Senior Field Workers and Field Workers."
+    ],
+    learning: [
+      "Gained exposure to an IRS-related training session.",
+      "Observed the importance of training field workers before implementation."
+    ],
+    takeaway:
+      "Training and clear instructions help field workers understand programme procedures."
+  },
 
-        detailPanel.style.display = "block";
+  "2026-10-09": {
+    emotion: "😊",
+    activity: [
+      "Visited Phulwarisharif to collect RK39 test data.",
+      "Met the M&E Officer, MOIC and BCM."
+    ],
+    learning: [
+      "Learned about the importance of collecting and maintaining programme data.",
+      "Gained exposure to coordination with block- and facility-level stakeholders."
+    ],
+    takeaway:
+      "Accurate data collection and stakeholder coordination support monitoring and programme follow-up."
+  },
 
-        detailPanel.scrollIntoView({
-            behavior: "smooth",
-            block: "center"
-        });
+  "2026-10-12": {
+    emotion: "😊",
+    activity: [
+      "Visited Danapur to coordinate with stakeholders regarding licensing activities.",
+      "Reached at around 2 PM but could not meet the stakeholders."
+    ],
+    learning: [
+      "Learned that time management is essential for field visits.",
+      "Understood the importance of starting early when travelling long distances.",
+      "Recognized that planning travel time is necessary to meet stakeholders successfully."
+    ],
+    takeaway:
+      "Effective time management and early planning are essential for successful fieldwork, especially when travelling long distances to meet stakeholders.",
+    challenges:
+      "I reached Danapur around 2 PM and could not meet the stakeholders. The experience showed me the importance of leaving early and planning travel time."
+  },
 
-    });
-
-});
-
-
-/* Close details */
-function closeDetails() {
-
-    detailPanel.style.display = "none";
-
-}
-
-</script>
-
-</body>
-  </html>
+  "2026-10-13": {
+    emotion: "😊",
+    activity: [
+      "Visited the DMO Office.",
+      "The DMO asked us about our fellowship process, and I was able to reflect on my jour
